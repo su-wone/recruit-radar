@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { JobsModule } from './jobs/jobs.module';
+import { CompaniesModule } from './companies/companies.module';
+import { StatsModule } from './stats/stats.module';
+import { CrawlerModule } from './crawler/crawler.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -15,6 +20,11 @@ import { ScheduleModule } from '@nestjs/schedule';
       synchronize: true,
     }),
     ScheduleModule.forRoot(),
+    JobsModule,
+    CompaniesModule,
+    StatsModule,
+    CrawlerModule,
+    SchedulerModule,
   ],
 })
 export class AppModule {}
