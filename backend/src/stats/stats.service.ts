@@ -7,10 +7,10 @@ export class StatsService {
 
   async getTechStackRanking(): Promise<{ name: string; category: string; count: number }[]> {
     const rows = await this.dataSource.query(`
-      SELECT ts.name, ts.category, COUNT(jpts.job_posting_id)::int AS count
+      SELECT ts.name, ts.category, COUNT(jpts."jobPostingsId")::int AS count
       FROM tech_stacks ts
-      JOIN job_posting_tech_stacks jpts ON ts.id = jpts.tech_stack_id
-      JOIN job_postings jp ON jp.id = jpts.job_posting_id AND jp.is_active = true
+      JOIN job_posting_tech_stacks jpts ON ts.id = jpts."techStacksId"
+      JOIN job_postings jp ON jp.id = jpts."jobPostingsId" AND jp.is_active = true
       GROUP BY ts.name, ts.category ORDER BY count DESC LIMIT 20
     `);
     return rows.map((r: any) => ({ name: r.name, category: r.category, count: Number(r.count) }));
@@ -34,10 +34,10 @@ export class StatsService {
   async getTechStackCombos(): Promise<{ stacks: string[]; count: number }[]> {
     const rows = await this.dataSource.query(`
       SELECT STRING_AGG(ts.name, ',' ORDER BY ts.name) AS stacks, COUNT(*)::int AS count
-      FROM (SELECT jpts.job_posting_id, ts.name
+      FROM (SELECT jpts."jobPostingsId", ts.name
         FROM job_posting_tech_stacks jpts
-        JOIN tech_stacks ts ON ts.id = jpts.tech_stack_id
-        JOIN job_postings jp ON jp.id = jpts.job_posting_id AND jp.is_active = true
+        JOIN tech_stacks ts ON ts.id = jpts."techStacksId"
+        JOIN job_postings jp ON jp.id = jpts."jobPostingsId" AND jp.is_active = true
       ) ts GROUP BY ts.job_posting_id HAVING COUNT(*) >= 2
     `);
     const comboMap = new Map<string, number>();
