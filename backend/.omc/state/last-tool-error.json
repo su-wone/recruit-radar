@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd /Users/admin/jobscout && docker compose ps 2>/dev/null && echo \\\"---\\\" && git log --oneline -5\",\"description\":\"Check project status\"}",
+  "error": "Exit code 1",
+  "timestamp": "2026-04-03T03:19:11.155Z",
+  "retry_count": 1
+}
