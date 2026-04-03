@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd /Users/admin/jobscout/backend && npx tsc --noEmit\",\"description\":\"Verify compilation\"}",
+  "error": "Exit code 2\nsrc/crawler/crawler.service.ts(70,30): error TS2769: No overload matches this call.\n  Overload 1 of 3, '(entityLikeArray: DeepPartial<JobPosting>[]): JobPosting[]', gave the following error.\n    Object literal may only specify known properties, and 'title' does not exist in type 'DeepPartial<JobPosting>[]'.\n  Overload 2 of 3, '(entityLike: DeepPartial<JobPosting>): JobPosting', gave the following error.\n    Type 'string | null' is not assignable to type 'string | undefined'.\n      Ty...",
+  "timestamp": "2026-03-31T09:24:07.518Z",
+  "retry_count": 1
+}

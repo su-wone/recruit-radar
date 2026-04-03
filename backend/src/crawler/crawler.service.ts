@@ -59,16 +59,32 @@ export class CrawlerService {
       if (!ts) { ts = this.techStackRepo.create({ name: stackName, category: TechCategory.FRAMEWORK }); ts = await this.techStackRepo.save(ts); }
       techStacks.push(ts);
     }
+    const parsedDeadline = this.parseDeadline(crawledJob.deadline);
     const existing = await this.jobRepo.findOne({ where: { source_site: sourceSite as SourceSite, source_id: crawledJob.source_id } });
     if (existing) {
-      Object.assign(existing, { title: crawledJob.title, description: crawledJob.description, salary_min: crawledJob.salary_min ?? null, salary_max: crawledJob.salary_max ?? null, experience_min: crawledJob.experience_min ?? null, experience_max: crawledJob.experience_max ?? null, location: crawledJob.location, deadline: crawledJob.deadline ?? null, tech_stacks: techStacks });
+      Object.assign(existing, { title: crawledJob.title, description: crawledJob.description, salary_min: crawledJob.salary_min ?? null, salary_max: crawledJob.salary_max ?? null, experience_min: crawledJob.experience_min ?? null, experience_max: crawledJob.experience_max ?? null, location: crawledJob.location, deadline: parsedDeadline, tech_stacks: techStacks });
       await this.jobRepo.save(existing);
       return { isNew: false };
     }
     const employmentMap: Record<string, EmploymentType> = { '정규직': EmploymentType.FULL_TIME, '계약직': EmploymentType.CONTRACT, '인턴': EmploymentType.INTERN };
-    const job = this.jobRepo.create({ title: crawledJob.title, description: crawledJob.description, salary_min: crawledJob.salary_min, salary_max: crawledJob.salary_max, experience_min: crawledJob.experience_min, experience_max: crawledJob.experience_max, location: crawledJob.location, employment_type: employmentMap[crawledJob.employment_type] || EmploymentType.FULL_TIME, deadline: crawledJob.deadline, source_url: crawledJob.source_url, source_site: sourceSite as SourceSite, source_id: crawledJob.source_id, company, tech_stacks: techStacks });
+    const job = this.jobRepo.create({ title: crawledJob.title, description: crawledJob.description, salary_min: crawledJob.salary_min, salary_max: crawledJob.salary_max, experience_min: crawledJob.experience_min, experience_max: crawledJob.experience_max, location: crawledJob.location, employment_type: employmentMap[crawledJob.employment_type] || EmploymentType.FULL_TIME, deadline: parsedDeadline || undefined, source_url: crawledJob.source_url, source_site: sourceSite as SourceSite, source_id: crawledJob.source_id, company, tech_stacks: techStacks });
     await this.jobRepo.save(job);
     return { isNew: true };
+  }
+
+  private parseDeadline(raw?: string): string | null {
+    if (!raw) return null;
+    // "2026-04-15" 형식이면 그대로
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    // "~ 04/29(수)" → "2026-04-29"
+    const match = raw.match(/(\d{1,2})\/(\d{1,2})/);
+    if (match) {
+      const year = new Date().getFullYear();
+      const month = match[1].padStart(2, '0');
+      const day = match[2].padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+    return null;
   }
 
   async getCrawlLogs() { return this.crawlLogRepo.find({ order: { started_at: 'DESC' }, take: 50 }); }
