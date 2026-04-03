@@ -1,0 +1,5 @@
+{"t":0,"agent":"abacf4c","agent_type":"scientist","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"abacf4c","agent_type":"scientist","event":"agent_stop","success":true,"duration_ms":746368}
+{"t":0,"agent":"a470590","agent_type":"executor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a93faa5","agent_type":"executor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a93faa5","agent_type":"executor","event":"agent_stop","success":true,"duration_ms":581139}

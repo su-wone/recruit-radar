@@ -66,7 +66,7 @@ export class SaraminCrawler extends BaseCrawler {
         const techStacks: string[] = [];
         $el.find('.job_sector span').each((_, tag) => {
           const t = $(tag).text().trim();
-          if (t && t !== '외') techStacks.push(t);
+          if (t && t !== '외' && !/^\d/.test(t) && !t.includes('수정일') && !t.includes('등록일')) techStacks.push(t);
         });
 
         let experienceMin: number | undefined;
